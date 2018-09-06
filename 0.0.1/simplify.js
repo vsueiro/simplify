@@ -1,8 +1,11 @@
 function the( thing, parent ) {
 
   let item, list
-
-  parent = parent || document
+  
+  if ( typeof parent === 'string' )
+    parent = the( parent )
+  else
+    parent = parent || document
 
   item = document.getElementById( thing )
   if ( item !== null ) return item
@@ -16,14 +19,16 @@ function the( thing, parent ) {
   item = parent.querySelector( thing )
   if ( item !== null ) return item
 
-  return null
 }
 
 function them( thing, parent ) {
 
   let list
   
-  parent = parent || document
+  if ( typeof parent === 'string' )
+    parent = the( parent )
+  else
+    parent = parent || document
 
   list = parent.getElementsByClassName( thing )
   if ( list.length ) return list
@@ -34,49 +39,30 @@ function them( thing, parent ) {
   list = parent.querySelectorAll( thing )
   if ( list.length ) return list
 
-  return null
-
 }
 
 function each( thing, callback, parent ) {
 
-  let list, isArray, get, total
-
-  parent = parent || document
+  let list, isArray, retrieved, total
   
-  get = function( thing ) {
-    
-    if ( typeof thing === 'string' ) {
-
-      list = parent.getElementsByClassName( thing )
-      if ( list.length ) return list
-
-      list = parent.getElementsByTagName( thing )
-      if ( list.length ) return list
-
-      list = parent.querySelectorAll( thing )
-      if ( list.length ) return list
-
-      return false
-    }
-
-    return thing
-  }
-
-  list = get( thing )
-
-  if ( !list ) return false
+  if ( typeof parent === 'string' )
+    parent = the( parent )
+  else
+    parent = parent || document
+  
+  if ( typeof thing === 'string' )
+    retrieved = them( thing, parent )
+  
+  list = retrieved ? retrieved : thing
 
   isArray = list.constructor === Array ? true : false
 
   total = typeof list === 'number' ? list : list.length
   
-  for ( var i = 0 ; i < total ; i++ ) {
+  for ( let i = 0 ; i < total ; i++ ) {
 
     if ( isArray ) callback.call( list[ i ], list[ i ], i )
     else           callback.call( list[ i ], i )
 
   }
-
-  return null
 }
