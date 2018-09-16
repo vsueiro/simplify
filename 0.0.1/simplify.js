@@ -1,3 +1,13 @@
+// start polyfills
+
+if (!String.prototype.startsWith) {
+	String.prototype.startsWith = function(search, pos) {
+		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+	};
+}
+
+// end polyfills
+
 function the( thing, parent ) {
 
   let item, list
@@ -65,4 +75,27 @@ function each( thing, callback, parent ) {
     else           callback.call( list[ i ], i )
 
   }
+}
+
+function create( thing ) {
+  
+  let element
+  
+  if ( thing.startsWith( '.') ) {
+    let attribute = thing.replace( '.', '' )
+    element = document.createElement( 'div' )
+    element.classList.add( attribute )
+    return element
+  }
+    
+  if ( thing.startsWith( '#') ) {
+    let attribute = thing.replace( '#', '' )
+    element = document.createElement( 'div' )
+    element.id = attribute
+    return element
+  }
+      
+  element = document.createElement( thing )
+  return element
+  
 }
